@@ -1,12 +1,12 @@
 ## NOTE: this file reuses a lot of code from Project 1
 
 import sys
-import fileio as fio
-import components as comp
-import visualization as vis
+import file_io as fio
 import homophily as hom
+"""import components as comp
+import visualization as vis
 import balanced_graph as bal
-import simulation as sim
+import simulation as sim"""
 
 # TODO: robustness_check k needs to be repeated several times, but i want to reuse the removal with simulate_failures. implement removal, then come back to properly show this on main
 
