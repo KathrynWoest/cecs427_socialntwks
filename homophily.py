@@ -11,6 +11,7 @@ def verify_hom(graph):
     for node, color in graph.nodes(data="color"):
         if color == None:
             raise Exception("At least one node in the graph does not contain a 'color' field, so homophily cannot be calculated. Program terminated.")
+    
     try:
         # determine the number of cross edges
         color_list = list(nx.get_node_attributes(graph, 'color').values())

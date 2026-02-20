@@ -3,9 +3,9 @@
 import sys
 import file_io as fio
 import homophily as hom
+import balanced_graph as bal
 """import components as comp
 import visualization as vis
-import balanced_graph as bal
 import simulation as sim"""
 
 # TODO: robustness_check k needs to be repeated several times, but i want to reuse the removal with simulate_failures. implement removal, then come back to properly show this on main
@@ -51,7 +51,7 @@ def main():
     if "--plot" in args:
         # check if vis output control is missing. if so, terminate program.
         if (args.index("--plot") + 1 >= end) or ("--" in args[args.index("--plot") + 1]):
-                raise Exception("Program was terminated because it was missing the plot control argument.")
+            raise Exception("Program was terminated because it was missing the plot control argument.")
         
         control = args[args.index("--plot") + 1]
         if control not in ["C", "N", "P"]:
@@ -71,7 +71,7 @@ def main():
     if "--output" in args:
         # check if the output file name is missing. if so, terminate program.
         if (args.index("--output") + 1 >= end) or ("--" in args[args.index("--output") + 1]):
-                raise Exception("Program was terminated because it was missing the output file name argument.")
+            raise Exception("Program was terminated because it was missing the output file name argument.")
         
         output_file = args[args.index("--output") + 1]
 
@@ -81,7 +81,7 @@ def main():
     if "--simulate_failures" in args:
         # check if k is missing. if so, terminate program.
         if (args.index("--simulate_failures") + 1 >= end) or ("--" in args[args.index("--simulate_failures") + 1]):
-                raise Exception("Program was terminated because it was missing the number of removal edges argument.")
+            raise Exception("Program was terminated because it was missing the number of removal edges argument.")
         
         k = args[args.index("--simulate_failures") + 1]
         reduced_graph = comp.removal(user_graph, k)
@@ -91,7 +91,7 @@ def main():
     if "--temporal_simulation" in args:
          # check if the simulation file is missing. if so, terminate program.
         if (args.index("--temporal_simulation") + 1 >= end) or ("--" in args[args.index("--temporal_simulation") + 1]):
-                raise Exception("Program was terminated because it was missing the simulation file argument.")
+            raise Exception("Program was terminated because it was missing the simulation file argument.")
         
         sim_file = args[args.index("--temporal_simulation") + 1]
         sim.animate(user_graph, sim_file)
