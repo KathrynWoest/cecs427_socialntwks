@@ -1,198 +1,157 @@
 import networkx as nx
 import plotly.graph_objects as go
 
-def plot(X, clustering_coeff, neighborhood_overlap, graph):
+def plot(mode, graph, clustering_coeff=None, neighborhood_overlap=None):
     G = nx.read_gml(graph)
 
-    # Plot the edges
-    edge_x = []
-    edge_y = []
-    for edge in G.edges():
-        x0, y0 = G.nodes[edge[0]]['pos']
-        x1, y1 = G.nodes[edge[1]]['pos']
-        edge_x.append(x0)
-        edge_x.append(x1)
-        edge_x.append(None)
-        edge_y.append(y0)
-        edge_y.append(y1)
-        edge_y.append(None)
+    # Get node positions
+    pos = {n: G.nodes[n]['pos'] for n in G.nodes()}
 
-    # Plot the nodes
-    node_x = []
-    node_y = []
-    clustering_coeff = []   
-    neighborhood_overlap = []
-    for node in G.nodes():
-        x, y = G.nodes[node]['pos']
-        node_x.append(x)
-        node_y.append(y)
+    node_x = [pos[n][0] for n in G.nodes()]
+    node_y = [pos[n][1] for n in G.nodes()]
 
-        # # Calculate clustering coefficient for each node
-        # clustering_coeff.append(nx.clustering(G)) 
+    # Set default visual settings
+    node_size = [10] * G.number_of_nodes()
+    node_color = ["blue"] * G.number_of_nodes()
+    node_text = []
 
-        # # Calculate neighborhood overlap for each node
-        # neighborhood_overlap.append(G.degree[node])
+    edge_traces = []
 
-    if X == "C":
+    if mode == "C":
     # Visualize clustering coefficient (node size = cc, color = degree)
-        edge_trace = go.Scatter(
-        x=edge_x, y=edge_y,
-        line=dict(width=0.5, color='#888'),
-        hoverinfo='none',
-        mode='lines')
+        if clustering_coeff is None:
+            raise ValueError("Clustering coefficient data required for mode 'C'.")
 
-        node_trace = go.Scatter(
-        x=node_x, y=node_y,
-        mode='markers',
-        hoverinfo='text',
-        marker=dict(
-            showscale=True,
-            # colorscale options
-            #'Greys' | 'YlGnBu' | 'Greens' | 'YlOrRd' | 'Bluered' | 'RdBu' |
-            #'Reds' | 'Blues' | 'Picnic' | 'Rainbow' | 'Portland' | 'Jet' |
-            #'Hot' | 'Blackbody' | 'Earth' | 'Electric' | 'Viridis' |
-            colorscale='YlGnBu',
-            reversescale=True,
-            color=[],
-            size=10,
-            colorbar=dict(
-                thickness=15,
-                title=dict(
-                text='Node Connections',
-                side='right'
-                ),
-                xanchor='left',
-            ),
-            line_width=2))
-        
-        degree = []
-        node_text = []
-        for node, adjacencies in enumerate(G.adjacency()):
-            degree.append(len(adjacencies[1]))
-            node_text.append('degree: '+str(len(adjacencies[1])))
+        degree = dict(G.degree())
 
-        node_trace.marker.color = degree    # node color = degree
-        node_trace.marker.size = clustering_coeff     # node size = clustering coeff.
-        node_trace.text = node_text
+        node_size = [
+            clustering_coeff[n] * 40 + 10
+            for n in G.nodes()
+        ]
 
-    elif X == "N":
+        node_color = [
+            degree[n]
+            for n in G.nodes()
+        ]
+
+        node_text = [
+            f"Node: {n}<br>Degree: {degree[n]}<br>CC: {clustering_coeff[n]:.3f}"
+            for n in G.nodes()
+        ]
+
+        # Uniform edges
+        edge_x, edge_y = [], []
+        for u, v in G.edges():
+            edge_x += [pos[u][0], pos[v][0], None]
+            edge_y += [pos[u][1], pos[v][1], None]
+
+        edge_traces.append(
+            go.Scatter(
+                x=edge_x,
+                y=edge_y,
+                mode="lines",
+                line=dict(width=1, color="#888"),
+                hoverinfo="none"
+            )
+        )
+
+    elif mode == "N":
     # Visualize neighborhood overlap (edge thickness = NO, color = sum of degrees at end points)
-        edge_trace = go.Scatter(
-        x=edge_x, y=edge_y,
-        line=dict(width=0.5, color='#888'),
-        hoverinfo='none',
-        mode='lines')
+        if neighborhood_overlap is None:
+            raise ValueError("Neighborhood overlap data required for mode 'N'.")
 
-        node_trace = go.Scatter(
-        x=node_x, y=node_y,
-        mode='markers',
-        hoverinfo='text',
-        marker=dict(
-            showscale=True,
-            # colorscale options
-            #'Greys' | 'YlGnBu' | 'Greens' | 'YlOrRd' | 'Bluered' | 'RdBu' |
-            #'Reds' | 'Blues' | 'Picnic' | 'Rainbow' | 'Portland' | 'Jet' |
-            #'Hot' | 'Blackbody' | 'Earth' | 'Electric' | 'Viridis' |
-            colorscale='YlGnBu',
-            reversescale=True,
-            color=[],
-            size=10,
-            colorbar=dict(
-                thickness=15,
-                title=dict(
-                text='Node Connections',
-                side='right'
-                ),
-                xanchor='left',
-            ),
-            line_width=2))
-        
-        degree = []
-        node_text = []
-        for node, adjacencies in enumerate(G.adjacency()):
-            degree.append(len(adjacencies[1]))
-            node_text.append('degree: '+str(len(adjacencies[1])))
+        degree = dict(G.degree())
 
-        edge_trace.marker.color = degree    
-        edge_trace.marker.size = neighborhood_overlap   
-        node_trace.text = node_text
+        for u, v in G.edges():
+            overlap = neighborhood_overlap.get((u, v)) \
+                      or neighborhood_overlap.get((v, u)) \
+                      or 0
 
-    elif X == "P":
+            width = overlap * 10 + 1
+            degree_sum = degree[u] + degree[v]
+
+            # Add each edge one by one
+            edge_traces.append(
+                go.Scatter(
+                    x=[pos[u][0], pos[v][0]],
+                    y=[pos[u][1], pos[v][1]],
+                    mode="lines",
+                    line=dict(width=width, color=f"rgba(0,0,255,{overlap})"),
+                    hoverinfo="text",
+                    text=f"Overlap: {overlap:.3f}<br>Degree Sum: {degree_sum}"
+                )
+            )
+
+        node_text = [
+            f"Node: {n}<br>Degree: {degree[n]}"
+            for n in G.nodes()
+        ]
+
+    elif mode == "P":
     # Plot the attributes (node color, edge signs)
-        edge_trace = go.Scatter(
-        x=edge_x, y=edge_y,
-        line=dict(width=0.5, color='#888'),
-        hoverinfo='none',
-        mode='lines')
+        for u, v in G.edges():
+            sign = G.edges[u, v].get("sign", "unknown")
 
-        node_trace = go.Scatter(
-        x=node_x, y=node_y,
-        mode='markers',
-        hoverinfo='text',
+            if sign == "positive":
+                color = "green"
+            elif sign == "negative":
+                color = "red"
+            else:
+                color = "gray"
+
+            # Add each edge one by one
+            edge_traces.append(
+                go.Scatter(
+                    x=[pos[u][0], pos[v][0]],
+                    y=[pos[u][1], pos[v][1]],
+                    mode="lines",
+                    line=dict(width=2, color=color),
+                    hoverinfo="text",
+                    text=f"Sign: {sign}"
+                )
+            )
+
+        node_color = [
+            G.nodes[n].get("color", "blue")
+            for n in G.nodes()
+        ]
+
+        node_text = [
+            f"Node: {n}<br>Color: {G.nodes[n].get('color', 'blue')}"
+            for n in G.nodes()
+        ]
+
+    else:
+        raise ValueError("Mode must be one of: C, N, P")
+
+    # Plot nodes
+    node_trace = go.Scatter(
+        x=node_x,
+        y=node_y,
+        mode="markers",
+        hoverinfo="text",
+        text=node_text,
         marker=dict(
-            showscale=True,
-            # colorscale options
-            #'Greys' | 'YlGnBu' | 'Greens' | 'YlOrRd' | 'Bluered' | 'RdBu' |
-            #'Reds' | 'Blues' | 'Picnic' | 'Rainbow' | 'Portland' | 'Jet' |
-            #'Hot' | 'Blackbody' | 'Earth' | 'Electric' | 'Viridis' |
-            colorscale='YlGnBu',
-            reversescale=True,
-            color=[],
-            size=10,
-            colorbar=dict(
-                thickness=15,
-                title=dict(
-                text='Node Connections',
-                side='right'
-                ),
-                xanchor='left',
-            ),
-            line_width=2))
-        
-        edge_color = []
-        node_color = []
-        edge_text = []
-        node_text = []
+            size=node_size,
+            color=node_color,
+            colorscale="YlGnBu" if mode == "C" else None,
+            showscale=(mode == "C"),
+            line_width=2
+        )
+    )
 
-        # Setting node color
-        for node in G.nodes():
-            node_text.append(node.label)
-            node_color.append("blue")
-            
-        
-        # Labeling edge signs and setting their colors
-        for edge in G.edges():
-            edge_text.append('sign: '+ edge.sign)
+    # Generate graph
+    fig = go.Figure(
+        data=edge_traces + [node_trace],
+        layout=go.Layout(
+            title="Network Graph",
+            showlegend=False,
+            hovermode="closest",
+            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        )
+    )
 
-            if edge.color == "r":
-                edge_color = "red"
-            elif edge.color == "g":
-                edge_color = "green"
-
-
-        edge_trace.marker.color = edge_color   
-        edge_trace.text = edge_text
-        node_trace.marker.color = node_color
-
-    
-    fig = go.Figure(data=[edge_trace, node_trace],
-                layout=go.Layout(
-                    title=dict(
-                        text="<br>Network Graph",
-                        font=dict(
-                            size=16
-                        )
-                    ),
-                    showlegend=False,
-                    hovermode='closest',
-                    margin=dict(b=20,l=5,r=5,t=40),
-                    annotations=[ dict(
-                        showarrow=False,
-                        xref="paper", yref="paper",
-                        x=0.005, y=-0.002 ) ],
-                    xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                    yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
-                    )
     fig.show()
 
-    return
+    return 
