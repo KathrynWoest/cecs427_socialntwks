@@ -4,6 +4,8 @@ import sys
 import file_io as fio
 import homophily as hom
 import balanced_graph as bal
+import cluster
+import neighborhood as nh
 """import components as comp
 import visualization as vis
 import simulation as sim"""
@@ -66,7 +68,7 @@ def main():
     # call the balanced graph function
     if "--verify_balanced_graph" in args:
         bal.verify_bal(user_graph)
-    
+
     # call the output function
     if "--output" in args:
         # check if the output file name is missing. if so, terminate program.
@@ -95,5 +97,27 @@ def main():
         
         sim_file = args[args.index("--temporal_simulation") + 1]
         sim.animate(user_graph, sim_file)
+
+
+    # call the clustering coefficient function
+    if "--clustering" in args:
+        # check if the selected node is missing. if so, terminate program.
+        if (args.index("--clustering") + 1 >= end) or ("--" in args[args.index("--clustering") + 1]):
+            raise Exception("Program was terminated because it was missing the clustering coefficient node argument.")
+        
+        selected_node = args[args.index("--clustering") + 1]
+
+        coefficient = cluster.clustering_coefficient(user_graph, selected_node)
+    
+    # call the neighborhood overlap function
+    if "--neighborhood" in args:
+        # check if the selected nodes are missing. if so, terminate program.
+        if (args.index("--neighborhood") + 2 >= end) or ("--" in args[args.index("--neighborhood") + 1]) or ("--" in args[args.index("--neighborhood") + 2]):
+            raise Exception("Program was terminated because it was missing the neighborhood overlap nodes arguments.")
+        
+        selected_node_1 = args[args.index("--neighborhood") + 1]
+        selected_node_2 = args[args.index("--neighborhood") + 2]
+
+        overlap = nh.neighborhood_overlap(user_graph, selected_node_1, selected_node_2)
 
 main()
