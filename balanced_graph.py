@@ -1,5 +1,4 @@
 import networkx as nx
-import copy
 
 
 def create_supernodes(graph, node_list, supernode_list, iterator):
@@ -47,6 +46,53 @@ def create_supernodes(graph, node_list, supernode_list, iterator):
     return node_list, supernode_list
 
 
+def create_supernodes_graph(graph, supernode_list):
+    """Function that takes the user graph and the list of the supernodes in it, then constructs a graph with the supernodes and edges connecting them
+    Input: user graph and the list of supernodes (formatted as [[supernode1], [supernode2], ...])
+    Output: the constructed supernode graph"""
+
+    supernode_graph = nx.empty_graph()
+    j = 0
+
+    # add nodes, labeled 0, 1, 2, ...
+    for supernode in supernode_list:
+        supernode_graph.add_node(j, label=j)
+        j += 1
+
+    # make a list of all the negative edges in the graph
+    negative_edges = []
+    for node1, node2, sign in graph.edges(data="sign"):
+        if sign == "-":
+            negative_edges.append([node1, node2])
+    
+    # add edges
+    for i in range(len(supernode_list)):
+        # iterate through each supernode in the supernodes list
+        supernode = supernode_list[i]
+        for edge in negative_edges:
+            # for each possible negative edge, check to see if it has an end node in the supernode
+            if (edge[0] in supernode and edge[1] not in supernode) or (edge[0] not in supernode and edge[1] in supernode):
+                # check which node is not in the current supernode
+                if edge[0] not in supernode:
+                    diff_node = edge[0]
+                else:
+                    diff_node = edge[1]
+
+                # then iterate through the supernodes to find which one it does belong to
+                diff_supernode = i
+                for j in range(len(supernode_list)):
+                    if diff_node in supernode_list[j]:
+                        diff_supernode = j
+
+                # check if the edge from the current supernode to the supernode the other node is in exists in the supernode graph
+                if not supernode_graph.has_edge(i, diff_supernode) or not supernode_graph.has_edge(diff_supernode, i):
+                    # if it's not, add the edge
+                    supernode_graph.add_edge(i, diff_supernode)
+   
+    # return the generated supernode graph
+    return supernode_graph
+
+
 def verify_bal(graph):
     """Function that determines if a graph is balanced using the BFS algorithm
     Input: user graph
@@ -68,5 +114,33 @@ def verify_bal(graph):
         supernodes.append([])
         # partition all of the nodes that match the first node in nodes into the above supernode
         nodes, supernodes = create_supernodes(graph, nodes, supernodes, i)
-        # increment the supernode tracker to restart with the new first node
+
+        # check if supernodes contain negative edges in them
+        for node1, node2, sign in graph.edges(data="sign"):
+            # if both nodes connected by a negative edge are in the supernode, then return False
+            if node1 in supernodes[i] and node2 in supernodes[i] and sign == "-":
+                print("The graph is unbalanced.")
+                return False
+
+        # increment the supernode tracker to restart with the new first node if the supernode contains no negative edges
         i += 1
+
+    # create the supernode graph with the negative edges between them
+    supernode_graph = create_supernodes_graph(graph, supernodes)
+
+    # create a list of the layers of nodes for a BFS search from the first node in the list
+    bfs_list = list(enumerate(nx.bfs_layers(supernode_graph, supernode_graph.nodes[0]["label"])))
+
+    # go through each layer in the BFS traversal
+    for layer, nodes in bfs_list:
+        # check between every node in the layer for an edge
+        for i in range(len(nodes)):
+            if i + 2 <= len(nodes):
+                if supernode_graph.has_edge(nodes[i], nodes[i+1]) or supernode_graph.has_edge(nodes[i+1], nodes[i]):
+                    # if an edge exists, return False
+                    print("The graph is unbalanced.")
+                    return False
+    
+    # if this point is reached, then there are no negative edges within supernodes or edges between nodes in the same level from a BFS search, so the graph is balanced. return True
+    print("The graph is balanced.")
+    return True
