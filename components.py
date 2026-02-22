@@ -15,10 +15,15 @@ def components(n, graph):
     partition = None
     for communities in n_iterations:
         partition = communities
+
+    if partition is None:
+        print(f"Could not find a partition with <= {n} components.")
+        return
     
     print(f"Graph partitioned into {len(partition)} components:")
     for i, comm in enumerate(partition):
         print(f"  Component {i+1}: {comm}")
-    else:
-        print(f"Could not find a partition with exactly {n} components within the algorithm's steps, or graph has fewer than {n} components initially.")
-    return
+        subgraph = graph.subgraph(comm).copy()
+        nx.write_gml(subgraph, f"component_{i+1}.gml")      # Export component to .gml
+    
+    return partition
