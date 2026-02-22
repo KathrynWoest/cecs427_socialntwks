@@ -50,7 +50,7 @@ def plot(mode, graph, clustering_coeff=None, neighborhood_overlap=None):
                 x=edge_x,
                 y=edge_y,
                 mode="lines",
-                line=dict(width=1, color="#888"),
+                line=dict(width=1, color="gray"),
                 hoverinfo="none"
             )
         )
