@@ -5,12 +5,13 @@ import scipy.stats as ss
 def verify_hom(graph):
     """Function that determines whether color-coded homophily exists in the graph using a statistical t-test
     Input: user graph
-    Output: boolean - True if homophily exists, False if not"""
+    Output: N/A - all print statements"""
 
     # check if one of the nodes doesn't have a color attribute. if one is missing, terminate the program.
     for node, color in graph.nodes(data="color"):
         if color == None:
-            raise Exception("At least one node in the graph does not contain a 'color' field, so homophily cannot be calculated. Program terminated.")
+            print("At least one node in the graph does not contain a 'color' field, so homophily cannot be calculated. Calculating homophily terminated.\n---")
+            return
     
     try:
         # determine the number of cross edges
@@ -38,13 +39,12 @@ def verify_hom(graph):
         test_value = (abs(mu - mu0) * (n ** (1/2))) / sigma0
     
     except Exception as e:
-        raise Exception("Something went wrong in the calculation of homophily. Program terminated. Error message:", e)
+        print("Something went wrong in the calculation of homophily. Calculation of homophily terminated. Error message:", e, "\n---")
+        return
 
     # determine if the difference is statistically significant or not
     if test_value > table_value:
-        print(f"The graph has evidence of homophily, with {mu:.2f} [the fraction of cross-edges] being significantly less than {mu0:.2f} [2p(1-p)].")
-        return True
+        print(f"The graph has evidence of homophily, with {mu:.2f} [the fraction of cross-edges] being significantly less than {mu0:.2f} [2p(1-p)].\n---")
     
     else:
-        print(f"The graph does not have evidence of homophily, with {mu:.2f} [the fraction of cross-edges] not being significantly less than {mu0:.2f} [2p(1-p)].")
-        return False
+        print(f"The graph does not have evidence of homophily, with {mu:.2f} [the fraction of cross-edges] not being significantly less than {mu0:.2f} [2p(1-p)].\n---")
