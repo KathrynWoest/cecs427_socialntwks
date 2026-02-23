@@ -1,7 +1,9 @@
 import networkx as nx
 import plotly.graph_objects as go
+from cluster import clustering_coefficient
+from neighborhood import neighborhood_overlap
 
-def plot(mode, graph, clustering_coeff=None, neighborhood_overlap=None):
+def plot(mode, graph, clustering_coeff=None, n_overlap=None):
     G = graph
 
     # Get node positions
@@ -27,10 +29,14 @@ def plot(mode, graph, clustering_coeff=None, neighborhood_overlap=None):
 
         degree = dict(G.degree())
 
-        node_size = [
-            clustering_coeff[n] * 40 + 10
-            for n in G.nodes()
-        ]
+        for n in G.nodes():
+            cc = clustering_coefficient(G, n) or 0.0
+            node_size.append(cc * 40 + 10)
+
+        # node_size = [
+        #     clustering_coeff[n] * 40 + 10
+        #     for n in G.nodes()
+        # ]
 
         node_color = [
             degree[n]
@@ -60,16 +66,18 @@ def plot(mode, graph, clustering_coeff=None, neighborhood_overlap=None):
 
     elif mode == "N":
     # Visualize neighborhood overlap (edge thickness = NO, color = sum of degrees at end points)
-        if neighborhood_overlap is None:
+        if n_overlap is None:
             raise ValueError("Neighborhood overlap data required for mode 'N'.")
 
         degree = dict(G.degree())
 
         for u, v in G.edges():
-            overlap = neighborhood_overlap.get((u, v)) \
-                      or neighborhood_overlap.get((v, u)) \
-                      or 0
+            # overlap = neighborhood_overlap.get((u, v)) \
+            #           or neighborhood_overlap.get((v, u)) \
+            #           or 0
 
+            # width = overlap * 10 + 1
+            overlap = neighborhood_overlap(G, u, v) or 0.0
             width = overlap * 10 + 1
             degree_sum = degree[u] + degree[v]
 
