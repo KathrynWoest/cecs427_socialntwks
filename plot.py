@@ -171,5 +171,5 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
 
     # fig.show()
     file_path = os.path.abspath("graph.html")
-    fig.write_html(file_path, open_browser=False)
+    fig.write_html(file_path, auto_open=False)
     webbrowser.open("file://" + file_path)
