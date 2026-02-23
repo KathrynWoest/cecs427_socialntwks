@@ -31,7 +31,7 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
 
         cc_values = {}
         for n in G.nodes():
-            cc = clustering_coefficient(G, n) or 0.0
+            cc = clustering_coefficient(G, n, True) or 0.0
             cc_values[n] = cc
             node_size.append(cc * 40 + 10)
 
