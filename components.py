@@ -1,7 +1,7 @@
 import networkx as nx
 import itertools
 
-def components(n, graph):
+def components(n, graph, output_components):
     # girvan_newman() returns an interator that yields a sequence of communities at each level
     communities_iterator = nx.community.girvan_newman(graph)
 
@@ -23,7 +23,9 @@ def components(n, graph):
     print(f"Graph partitioned into {len(partition)} components:")
     for i, comm in enumerate(partition):
         print(f"  Component {i+1}: {comm}")
-        subgraph = graph.subgraph(comm).copy()
-        nx.write_gml(subgraph, f"component_{i+1}.gml")      # Export component to .gml
+
+        if output_components:
+            subgraph = graph.subgraph(comm).copy()
+            nx.write_gml(subgraph, f"component_{i+1}.gml")      # Export component to .gml
     
     return partition
