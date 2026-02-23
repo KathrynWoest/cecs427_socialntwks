@@ -2,8 +2,8 @@ import networkx as nx
 import random
 import copy
 
-def robustness_check(graph_path, k, simulations=100):
-    G_original = nx.read_gml(graph_path)
+def robustness_check(graph, k, simulations=100):
+    G_original = graph
 
     # Store original clusters
     original_components = list(nx.connected_components(G_original))
