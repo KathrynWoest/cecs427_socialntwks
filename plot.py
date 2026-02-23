@@ -37,11 +37,6 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
             cc_values[n] = cc
             node_size.append(cc * 40 + 10)
 
-        # node_size = [
-        #     clustering_coeff[n] * 40 + 10
-        #     for n in G.nodes()
-        # ]
-
         node_color = [
             degree[n]
             for n in G.nodes()
@@ -76,11 +71,6 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
         degree = dict(G.degree())
 
         for u, v in G.edges():
-            # overlap = neighborhood_overlap.get((u, v)) \
-            #           or neighborhood_overlap.get((v, u)) \
-            #           or 0
-
-            # width = overlap * 10 + 1
             overlap = neighborhood_overlap(G, u, v, True) or 0.0
             width = overlap * 10 + 1
             degree_sum = degree[u] + degree[v]
@@ -169,10 +159,6 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
         )
     )
 
-    # fig.show()
-    # file_path = os.path.abspath("graph.html")
-    # fig.write_html("file_path", auto_open=False)
-    # webbrowser.open("file://" + file_path)
-
-    fig.write_html("graph.html", auto_open=False)
-    webbrowser.open("graph.html")
+    file_path = os.path.abspath("graph.html")
+    fig.write_html("file_path", auto_open=False)
+    webbrowser.open("file://" + file_path)
