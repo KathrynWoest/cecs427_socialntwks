@@ -45,8 +45,8 @@ def clustering_coefficient(graph, node, plot=False):
         
         # calculate clustering coefficient, save it into the node in the graph, and print/return the results
         coefficient = actual_edges / possible_edges
-        graph.nodes[node]["clustering_coefficient"] = coefficient
         if not plot:
+            graph.nodes[node]["clustering_coefficient"] = coefficient
             print(f"The clustering coefficient of node '{node}' is: {coefficient:.2f}.\n---")
         return coefficient
     
