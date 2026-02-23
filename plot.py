@@ -79,7 +79,7 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
             #           or 0
 
             # width = overlap * 10 + 1
-            overlap = neighborhood_overlap(G, u, v) or 0.0
+            overlap = neighborhood_overlap(G, u, v, True) or 0.0
             width = overlap * 10 + 1
             degree_sum = degree[u] + degree[v]
 

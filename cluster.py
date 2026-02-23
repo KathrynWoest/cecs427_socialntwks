@@ -1,9 +1,9 @@
 import networkx as nx
 
 
-def clustering_coefficient(graph, node):
+def clustering_coefficient(graph, node, plot=False):
     """Function that calculates the clustering coefficient of the given node in a graph, then saves that value with the node in the graph
-    Inputs: user graph, selected node to perform calculation on
+    Inputs: user graph, selected node to perform calculation on, bool to check if using function for plotting
     Output: N/A - all print statements"""
 
     # check to ensure the desired node exists in the graph
@@ -46,7 +46,8 @@ def clustering_coefficient(graph, node):
         # calculate clustering coefficient, save it into the node in the graph, and print/return the results
         coefficient = actual_edges / possible_edges
         graph.nodes[node]["clustering_coefficient"] = coefficient
-        print(f"The clustering coefficient of node '{node}' is: {coefficient:.2f}.\n---")
+        if not plot:
+            print(f"The clustering coefficient of node '{node}' is: {coefficient:.2f}.\n---")
         return coefficient
     
     except Exception as e:
