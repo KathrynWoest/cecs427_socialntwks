@@ -5,7 +5,10 @@ def plot(mode, graph, clustering_coeff=None, neighborhood_overlap=None):
     G = graph
 
     # Get node positions
-    pos = {n: G.nodes[n]['pos'] for n in G.nodes()}
+    pos = nx.get_node_attributes(G, 'pos')
+
+    if not pos:
+        pos = nx.spring_layout(G, seed=42)
 
     node_x = [pos[n][0] for n in G.nodes()]
     node_y = [pos[n][1] for n in G.nodes()]
