@@ -29,8 +29,10 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
 
         degree = dict(G.degree())
 
+        cc_values = {}
         for n in G.nodes():
             cc = clustering_coefficient(G, n) or 0.0
+            cc_values[n] = cc
             node_size.append(cc * 40 + 10)
 
         # node_size = [
@@ -44,7 +46,7 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
         ]
 
         node_text = [
-            f"Node: {n}<br>Degree: {degree[n]}<br>CC: {clustering_coeff[n]:.3f}"
+            f"Node: {n}<br>Degree: {degree[n]}<br>CC: {cc_values[n]:.3f}"
             for n in G.nodes()
         ]
 
