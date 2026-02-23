@@ -2,6 +2,7 @@ import networkx as nx
 import plotly.graph_objects as go
 from cluster import clustering_coefficient
 from neighborhood import neighborhood_overlap
+import os
 import webbrowser
 
 def plot(mode, graph, clustering_coeff=None, n_overlap=None):
@@ -169,4 +170,6 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
     )
 
     # fig.show()
-    fig.write_html("graph.html", auto_open=True)
+    file_path = os.path.abspath("graph.html")
+    fig.write_html(file_path, open_browser=False)
+    webbrowser.open("file://" + file_path)
