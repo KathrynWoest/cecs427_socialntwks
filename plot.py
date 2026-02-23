@@ -2,7 +2,7 @@ import networkx as nx
 import plotly.graph_objects as go
 
 def plot(mode, graph, clustering_coeff=None, neighborhood_overlap=None):
-    G = nx.read_gml(graph)
+    G = graph
 
     # Get node positions
     pos = {n: G.nodes[n]['pos'] for n in G.nodes()}
