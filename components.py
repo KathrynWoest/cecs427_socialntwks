@@ -21,7 +21,7 @@ def components(n, graph, output_components=False):
         partition = communities
 
     if partition is None:
-        print(f"Could not find a partition with <= {n} components.")
+        print(f"Could not find a partition with <= {n} components.\n---")
         return
     
     print(f"Graph partitioned into {len(partition)} components:")
@@ -31,5 +31,5 @@ def components(n, graph, output_components=False):
         if output_components:
             subgraph = graph.subgraph(comm).copy()
             nx.write_gml(subgraph, f"component_{i+1}.gml")      # Export component to .gml
-    
+    print("\n---")
     return partition
