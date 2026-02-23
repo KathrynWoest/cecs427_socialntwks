@@ -63,15 +63,6 @@ def main():
         else:
             k = args[args.index("--simulate_failures") + 1]
             sf.failures(user_graph, k)
-    
-    # call the temporal simulation function
-    if "--temporal_simulation" in args:
-         # check if the simulation file is missing. if so, terminate program.
-        if (args.index("--temporal_simulation") + 1 >= end) or ("--" in args[args.index("--temporal_simulation") + 1]):
-            print("Temporal simulation was terminated because it was missing the simulation file argument.\n---")
-        else:
-            sim_file = args[args.index("--temporal_simulation") + 1]
-            anim.animation(sim_file)
 
     # call the clustering coefficient function
     if "--clustering" in args:
@@ -93,6 +84,15 @@ def main():
 
             neighborhood_over = nh.neighborhood_overlap(user_graph, selected_node_1, selected_node_2)
 
+    # call the output function
+    if "--output" in args:
+        # check if the output file name is missing. if so, terminate program.
+        if (args.index("--output") + 1 >= end) or ("--" in args[args.index("--output") + 1]):
+            print("Outputting the file was terminated because it was missing the output file name argument.\n---")
+        else:
+            output_file = args[args.index("--output") + 1]
+            fio.save_graph(user_graph, output_file)
+
     # call the visualization function
     if "--plot" in args:
         # check if vis output control is missing. if so, terminate program.
@@ -104,14 +104,14 @@ def main():
                 print("Plotting was terminated because the plot control argument was not C, N, or P.\n---")
             else:
                 plot.plot(control, user_graph, cluster_coeff, neighborhood_over)
-
-    # call the output function
-    if "--output" in args:
-        # check if the output file name is missing. if so, terminate program.
-        if (args.index("--output") + 1 >= end) or ("--" in args[args.index("--output") + 1]):
-            print("Outputting the file was terminated because it was missing the output file name argument.\n---")
+    
+    # call the temporal simulation function
+    if "--temporal_simulation" in args:
+         # check if the simulation file is missing. if so, terminate program.
+        if (args.index("--temporal_simulation") + 1 >= end) or ("--" in args[args.index("--temporal_simulation") + 1]):
+            print("Temporal simulation was terminated because it was missing the simulation file argument.\n---")
         else:
-            output_file = args[args.index("--output") + 1]
-            fio.save_graph(user_graph, output_file)
+            sim_file = args[args.index("--temporal_simulation") + 1]
+            anim.animation(sim_file)
 
 main()
