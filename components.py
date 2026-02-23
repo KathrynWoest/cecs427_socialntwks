@@ -31,5 +31,5 @@ def components(n, graph, output_components=False):
         if output_components:
             subgraph = graph.subgraph(comm).copy()
             nx.write_gml(subgraph, f"component_{i+1}.gml")      # Export component to .gml
-    print("\n---")
+    print("---")
     return partition
