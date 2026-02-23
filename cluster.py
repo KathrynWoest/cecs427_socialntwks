@@ -47,6 +47,7 @@ def clustering_coefficient(graph, node):
         coefficient = actual_edges / possible_edges
         graph.nodes[node]["clustering_coefficient"] = coefficient
         print(f"The clustering coefficient of node '{node}' is: {coefficient:.2f}.\n---")
+        return coefficient
     
     except Exception as e:
         print("Something went wrong in the calculation of the clustering coefficient. Calculation of clustering coefficient terminated. Error message:", e, "\n---")

@@ -39,6 +39,7 @@ def neighborhood_overlap(graph, node1, node2):
         graph.nodes[node1]["neighborhood_overlap"] = {node2, overlap}
         graph.nodes[node2]["neighborhood_overlap"] = {node1, overlap}
         print(f"The neighborhood overlap of nodes '{node1}' and '{node2}' is: {overlap:.2f}.\n---")
+        return overlap
         
     except Exception as e:
         print("Something went wrong in the calculation of neighborhood overlap. Calculation of neighborhood overlap terminated. Error message:", e, "\n---")
