@@ -55,15 +55,6 @@ def main():
     if "--verify_balanced_graph" in args:
         bal.verify_bal(user_graph)
 
-    # call the output function
-    if "--output" in args:
-        # check if the output file name is missing. if so, terminate program.
-        if (args.index("--output") + 1 >= end) or ("--" in args[args.index("--output") + 1]):
-            print("Outputting the file was terminated because it was missing the output file name argument.\n---")
-        else:
-            output_file = args[args.index("--output") + 1]
-            fio.save_graph(user_graph, output_file)
-
     # call the simulate failures function
     if "--simulate_failures" in args:
         # check if k is missing. if so, terminate program.
@@ -113,5 +104,14 @@ def main():
                 print("Plotting was terminated because the plot control argument was not C, N, or P.\n---")
             else:
                 plot.plot(control, user_graph, cluster_coeff, neighborhood_over)
+
+    # call the output function
+    if "--output" in args:
+        # check if the output file name is missing. if so, terminate program.
+        if (args.index("--output") + 1 >= end) or ("--" in args[args.index("--output") + 1]):
+            print("Outputting the file was terminated because it was missing the output file name argument.\n---")
+        else:
+            output_file = args[args.index("--output") + 1]
+            fio.save_graph(user_graph, output_file)
 
 main()

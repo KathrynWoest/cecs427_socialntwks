@@ -36,8 +36,8 @@ def neighborhood_overlap(graph, node1, node2, plot=False):
         
         # calculate neighborhood overlap, save it into the nodes in the graph, and print/return the results
         overlap = and_nodes / or_nodes
-        graph.nodes[node1]["neighborhood_overlap"] = {node2, overlap}
-        graph.nodes[node2]["neighborhood_overlap"] = {node1, overlap}
+        graph.nodes[node1]["neighborhood_overlap"] = f"{node2}, {overlap}"
+        graph.nodes[node2]["neighborhood_overlap"] = f"{node1}, {overlap}"
         if not plot:
             print(f"The neighborhood overlap of nodes '{node1}' and '{node2}' is: {overlap:.2f}.\n---")
         return overlap
