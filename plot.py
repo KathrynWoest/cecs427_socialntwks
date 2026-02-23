@@ -105,9 +105,9 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
         for u, v in G.edges():
             sign = G.edges[u, v].get("sign", "unknown")
 
-            if sign == "positive":
+            if sign == "+":
                 color = "green"
-            elif sign == "negative":
+            elif sign == "-":
                 color = "red"
             else:
                 color = "gray"
@@ -128,6 +128,8 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
             G.nodes[n].get("color", "blue")
             for n in G.nodes()
         ]
+
+        node_color = ["red" if color == "r" else "green" if color == "g" else color for color in node_color]
 
         node_text = [
             f"Node: {n}<br>Color: {G.nodes[n].get('color', 'blue')}"
