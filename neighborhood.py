@@ -1,9 +1,9 @@
 import networkx as nx
 
 
-def neighborhood_overlap(graph, node1, node2):
+def neighborhood_overlap(graph, node1, node2, plot=False):
     """Function that calculates the neighborhood overlap between node1 and node2, then saves that information with the nodes in the graph
-    Inputs: user graph and two nodes to perform the calculation on
+    Inputs: user graph, two nodes to perform the calculation on, boolean to check if being used for plotting
     Output: N/A - all print statements"""
 
     # check to ensure the desired nodes exist in the graph
@@ -38,7 +38,8 @@ def neighborhood_overlap(graph, node1, node2):
         overlap = and_nodes / or_nodes
         graph.nodes[node1]["neighborhood_overlap"] = {node2, overlap}
         graph.nodes[node2]["neighborhood_overlap"] = {node1, overlap}
-        print(f"The neighborhood overlap of nodes '{node1}' and '{node2}' is: {overlap:.2f}.\n---")
+        if not plot:
+            print(f"The neighborhood overlap of nodes '{node1}' and '{node2}' is: {overlap:.2f}.\n---")
         return overlap
         
     except Exception as e:
