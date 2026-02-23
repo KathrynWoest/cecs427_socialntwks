@@ -7,9 +7,10 @@ import balanced_graph as bal
 import cluster
 import neighborhood as nh
 import simulate_fails as sf
-"""import components as comp
-import visualization as vis
-import simulation as sim"""
+import components as comp
+import robustness_check as rc
+import plot
+import animation as anim
 
 
 def main():
@@ -33,32 +34,18 @@ def main():
             n = args[args.index("--components") + 1]
             # check if each component should be exported to a separate .gml file
             if "--split_output_dir" in args:
-                comp.partition(user_graph, n, True)
+                comp.components(n, user_graph, True)
             else:
-                comp.partition(user_graph, n)
+                comp.components(n, user_graph)
             
-            # check if robustness check should occur
-            if "--robustness_check" in args:
-                # check if k is missing. if so, terminate program.
-                if (args.index("--robustness_check") + 1 >= end) or ("--" in args[args.index("--robustness_check") + 1]):
-                    print("Robustness check was terminated because it was missing the number of components for partitioning.\n---")
-                else:
-                    k = args[args.index("--robustness_check") + 1]
-
-                    reduced_graph = comp.removal(user_graph, k)
-                    comp.partition(reduced_graph, n)
-    
-    # call the visualization function
-    if "--plot" in args:
-        # check if vis output control is missing. if so, terminate program.
-        if (args.index("--plot") + 1 >= end) or ("--" in args[args.index("--plot") + 1]):
-            print("Plotting was terminated because it was missing the plot control argument.\n---")
+    # call the robustness check
+    if "--robustness_check" in args:
+        # check if k is missing. if so, terminate program.
+        if (args.index("--robustness_check") + 1 >= end) or ("--" in args[args.index("--robustness_check") + 1]):
+            print("Robustness check was terminated because it was missing the number of components for partitioning.\n---")
         else:
-            control = args[args.index("--plot") + 1]
-            if control not in ["C", "N", "P"]:
-                print("Plotting was terminated because the plot control argument was not C, N, or P.\n---")
-            else:
-                vis.plot(user_graph, control)
+            k = args[args.index("--robustness_check") + 1]
+            rc.robustness_check(user_graph, k)
 
     # call the homophily function
     if "--verify_homophily" in args:
@@ -93,8 +80,7 @@ def main():
             print("Temporal simulation was terminated because it was missing the simulation file argument.\n---")
         else:
             sim_file = args[args.index("--temporal_simulation") + 1]
-            sim.animate(user_graph, sim_file)
-
+            anim.animation(sim_file)
 
     # call the clustering coefficient function
     if "--clustering" in args:
@@ -103,7 +89,7 @@ def main():
             print("Clustering coefficient calculation was terminated because it was missing the clustering coefficient node argument.\n---")
         else:
             selected_node = args[args.index("--clustering") + 1]
-            cluster.clustering_coefficient(user_graph, selected_node)
+            cluster_coeff = cluster.clustering_coefficient(user_graph, selected_node)
     
     # call the neighborhood overlap function
     if "--neighborhood" in args:
@@ -114,6 +100,18 @@ def main():
             selected_node_1 = args[args.index("--neighborhood") + 1]
             selected_node_2 = args[args.index("--neighborhood") + 2]
 
-            nh.neighborhood_overlap(user_graph, selected_node_1, selected_node_2)
+            neighborhood_over = nh.neighborhood_overlap(user_graph, selected_node_1, selected_node_2)
+
+    # call the visualization function
+    if "--plot" in args:
+        # check if vis output control is missing. if so, terminate program.
+        if (args.index("--plot") + 1 >= end) or ("--" in args[args.index("--plot") + 1]):
+            print("Plotting was terminated because it was missing the plot control argument.\n---")
+        else:
+            control = args[args.index("--plot") + 1]
+            if control not in ["C", "N", "P"]:
+                print("Plotting was terminated because the plot control argument was not C, N, or P.\n---")
+            else:
+                plot.plot(control, user_graph, cluster_coeff, neighborhood_over)
 
 main()
