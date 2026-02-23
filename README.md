@@ -36,6 +36,8 @@ Completed By: Kathryn Woest (030131541) and Grace Flores (030169163)
 
 
 ## Example Commands and Outputs
-1. Command: 
+1. Command: `python3 graph_analysis.py homophily.gml --verify_homophily --components 4 --clustering 3`
+2. Command: `python3 graph_analysis.py imbalanced_graph.gml --plot P --verify_balanced_graph --simulate_failures 4`
+3. Command: `python3 graph_analysis.py balanced_graph.gml --output test_output.gml --robustness_check 5 --neighborhood 2 4`
 
-Outputs for all are annotated in this PDF: 
+Outputs for all are annotated in this PDF: https://pdflink.to/904b5c41/
