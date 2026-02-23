@@ -17,6 +17,8 @@ def main():
     # get arguments from command line and initialize BFS node list, the end of the argument list, and bools for which analyses were called
     args = sys.argv
     end = len(args)
+    cluster_coeff = None
+    neighborhood_over = None
 
     # if there are less than 2 arguments, then not possible to do anything. terminate program.
     if end < 2:
