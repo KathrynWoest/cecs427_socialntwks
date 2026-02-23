@@ -1,6 +1,5 @@
 ## NOTE: this file reuses a lot of code from Project 1
 
-import sys
 import networkx as nx
 
 def parse_graph(file_name):
