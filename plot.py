@@ -1,0 +1,157 @@
+import networkx as nx
+import plotly.graph_objects as go
+
+def plot(mode, graph, clustering_coeff=None, neighborhood_overlap=None):
+    G = nx.read_gml(graph)
+
+    # Get node positions
+    pos = {n: G.nodes[n]['pos'] for n in G.nodes()}
+
+    node_x = [pos[n][0] for n in G.nodes()]
+    node_y = [pos[n][1] for n in G.nodes()]
+
+    # Set default visual settings
+    node_size = [10] * G.number_of_nodes()
+    node_color = ["blue"] * G.number_of_nodes()
+    node_text = []
+
+    edge_traces = []
+
+    if mode == "C":
+    # Visualize clustering coefficient (node size = cc, color = degree)
+        if clustering_coeff is None:
+            raise ValueError("Clustering coefficient data required for mode 'C'.")
+
+        degree = dict(G.degree())
+
+        node_size = [
+            clustering_coeff[n] * 40 + 10
+            for n in G.nodes()
+        ]
+
+        node_color = [
+            degree[n]
+            for n in G.nodes()
+        ]
+
+        node_text = [
+            f"Node: {n}<br>Degree: {degree[n]}<br>CC: {clustering_coeff[n]:.3f}"
+            for n in G.nodes()
+        ]
+
+        # Uniform edges
+        edge_x, edge_y = [], []
+        for u, v in G.edges():
+            edge_x += [pos[u][0], pos[v][0], None]
+            edge_y += [pos[u][1], pos[v][1], None]
+
+        edge_traces.append(
+            go.Scatter(
+                x=edge_x,
+                y=edge_y,
+                mode="lines",
+                line=dict(width=1, color="gray"),
+                hoverinfo="none"
+            )
+        )
+
+    elif mode == "N":
+    # Visualize neighborhood overlap (edge thickness = NO, color = sum of degrees at end points)
+        if neighborhood_overlap is None:
+            raise ValueError("Neighborhood overlap data required for mode 'N'.")
+
+        degree = dict(G.degree())
+
+        for u, v in G.edges():
+            overlap = neighborhood_overlap.get((u, v)) \
+                      or neighborhood_overlap.get((v, u)) \
+                      or 0
+
+            width = overlap * 10 + 1
+            degree_sum = degree[u] + degree[v]
+
+            # Add each edge one by one
+            edge_traces.append(
+                go.Scatter(
+                    x=[pos[u][0], pos[v][0]],
+                    y=[pos[u][1], pos[v][1]],
+                    mode="lines",
+                    line=dict(width=width, color=f"rgba(0,0,255,{overlap})"),
+                    hoverinfo="text",
+                    text=f"Overlap: {overlap:.3f}<br>Degree Sum: {degree_sum}"
+                )
+            )
+
+        node_text = [
+            f"Node: {n}<br>Degree: {degree[n]}"
+            for n in G.nodes()
+        ]
+
+    elif mode == "P":
+    # Plot the attributes (node color, edge signs)
+        for u, v in G.edges():
+            sign = G.edges[u, v].get("sign", "unknown")
+
+            if sign == "positive":
+                color = "green"
+            elif sign == "negative":
+                color = "red"
+            else:
+                color = "gray"
+
+            # Add each edge one by one
+            edge_traces.append(
+                go.Scatter(
+                    x=[pos[u][0], pos[v][0]],
+                    y=[pos[u][1], pos[v][1]],
+                    mode="lines",
+                    line=dict(width=2, color=color),
+                    hoverinfo="text",
+                    text=f"Sign: {sign}"
+                )
+            )
+
+        node_color = [
+            G.nodes[n].get("color", "blue")
+            for n in G.nodes()
+        ]
+
+        node_text = [
+            f"Node: {n}<br>Color: {G.nodes[n].get('color', 'blue')}"
+            for n in G.nodes()
+        ]
+
+    else:
+        raise ValueError("Mode must be one of: C, N, P")
+
+    # Plot nodes
+    node_trace = go.Scatter(
+        x=node_x,
+        y=node_y,
+        mode="markers",
+        hoverinfo="text",
+        text=node_text,
+        marker=dict(
+            size=node_size,
+            color=node_color,
+            colorscale="YlGnBu" if mode == "C" else None,
+            showscale=(mode == "C"),
+            line_width=2
+        )
+    )
+
+    # Generate graph
+    fig = go.Figure(
+        data=edge_traces + [node_trace],
+        layout=go.Layout(
+            title="Network Graph",
+            showlegend=False,
+            hovermode="closest",
+            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        )
+    )
+
+    fig.show()
+
+    return 
