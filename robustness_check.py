@@ -15,6 +15,13 @@ def robustness_check(graph, k, simulations=100):
 
     edges = list(G_original.edges())
 
+    # ensure k is an integer
+    try:
+        k = int(k)
+    except:
+        print(f"{k} is not able to be converted into an integer, so removal of k edges is not possible. Simulating failures terminated.\n---")
+        return
+
     for _ in range(simulations):
 
         # Copy graph so original remains unchanged

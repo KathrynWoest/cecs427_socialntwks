@@ -5,8 +5,12 @@ def components(n, graph, output_components=False):
     # girvan_newman() returns an interator that yields a sequence of communities at each level
     communities_iterator = nx.community.girvan_newman(graph)
 
-    # number of components
-    n = n
+    # ensure n (number of components) is an integer
+    try:
+        n = int(n)
+    except:
+        print(f"{n} is not able to be converted into an integer, so removal of k edges is not possible. Simulating failures terminated.\n---")
+        return
 
     # stop the iteration when number of communities exceeds n (yields tuples of sets)
     n_iterations = itertools.takewhile(lambda c: len(c) <= n, communities_iterator)
