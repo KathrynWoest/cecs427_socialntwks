@@ -1,6 +1,5 @@
 import networkx as nx
 import random
-import copy
 
 def robustness_check(graph, k, simulations=100):
     G_original = graph
