@@ -4,6 +4,15 @@ import plotly.graph_objects as go
 
 
 def animation(csv_path):
+    """
+    Animates simulated graph evolution when removing k edges.
+
+    Parameters:
+        - csv_path (str): the path of the csv file containing the history of graph changes in format (source, target, timestamp, action)
+    
+    Outputs:
+        - .html file: the animated graph
+    """
 
     # Load CSV
     df = pd.read_csv(csv_path)

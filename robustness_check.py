@@ -2,6 +2,19 @@ import networkx as nx
 import random
 
 def robustness_check(graph, k, simulations=100):
+    """
+    Performs multiple simulations of `k` random edge failures and reports: average number of connected components,
+    max/min component sizes, and whether original clusters persist.
+
+    Parameters:
+        - graph (NetworkX graph): the graph on which to perform the robustness check
+        - k (int): number of edge failures
+        - simulations (int): the number of simulations to be run (default = 100)
+    
+    Returns:
+        - results (dict): the final results of the check
+    """
+
     G_original = graph
 
     # Store original clusters
@@ -59,6 +72,16 @@ def robustness_check(graph, k, simulations=100):
 
 
 def clusters_persist(original_components, new_components):
+    """
+    Helper function for checking if original clusters persist.
+
+    Parameters:
+        - original_components (list[set]): the original components of the graph
+        - new_components (list[set]): the new components of the graph after a simulation has been run
+
+    Returns:
+        - bool: `True` if the original components persist, `False` otherwise
+    """
     for original in original_components:
         found = False
         for new in new_components:
