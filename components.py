@@ -13,6 +13,7 @@ def components(n, graph, output_components=False):
     Returns:
         - partition (Incomplete): the partition with `n` components
     """
+    
     # girvan_newman() returns an interator that yields a sequence of communities at each level
     communities_iterator = nx.community.girvan_newman(graph)
 

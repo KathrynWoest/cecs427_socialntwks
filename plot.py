@@ -19,6 +19,7 @@ def plot(mode, graph, clustering_coeff=None, n_overlap=None):
     Outputs:
         - html file: visualized graph in HTML format
     """
+    
     G = graph
 
     # Get node positions

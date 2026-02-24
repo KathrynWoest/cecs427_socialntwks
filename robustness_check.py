@@ -82,6 +82,7 @@ def clusters_persist(original_components, new_components):
     Returns:
         - bool: `True` if the original components persist, `False` otherwise
     """
+    
     for original in original_components:
         found = False
         for new in new_components:
