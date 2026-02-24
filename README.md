@@ -23,15 +23,15 @@ Completed By: Kathryn Woest (030131541) and Grace Flores (030169163)
 ## Implementation Description
 1. **Overall Program:** `graph_analysis.py` calls functions from all the below files to compute things like homophily, balance, and clustering coefficients, and to plot/animate information as well. It also calls functions to parse in a given `.gml` file and write the final graph to another file.
 2. **MAIN - graph_analysis.py:** Calls functions from all other files. Allows for arguments to be in any order, as described above. Robust error handling that prevents an error in one function call to crash the entire program (aka will print an error message and then continue executing all other function calls). A lot of code in this file is reused from `graph.py` in Project 1.
-3. **animation.py:**
+3. **animation.py:** Animates simulated graph evolution when removing `k` edges. Takes in a CSV file in this format: `(source, target, timestamp, action)` and outputs a rendering of the animated graph.
 4. **balanced_graph.py:** Defines three functions. `create_supernodes()` creates a list of all the supernodes (as defined in class) in the given graph. `create_supernodes_graph()` takes the supernodes list and generates a graph with the appropriate negative edges between them. `verify_bal()` checks that all the edges are '+' or '-'. calls the above two functions, then utilizes a BFS approach with the supernodes graph to determine if the original graph is balanced and prints the results.
 5. **cluster.py:** Determines what the clustering coefficient is for a given node in the graph. Finds all of the node's neighbors, determines the number of edges among them, and then divides that by the number of possible edges to find the coefficient. Saves the coefficient as an attribute to the node it was calculated on.
-6. **components.py:**
+6. **components.py:** Partitions the graph into `n` components using the Girvan-Newman method. Can be used in combination with the `--robustness_check` flag to simulate the effect of removing `k` random edges before partitioning. Optionally use the  `--split_output_dir` flag to export each component to a separate `.gml` file.
 7. **file_io.py:** Defines two functions. `parse_graph()` takes a `.gml` file in and parses it into a NetworkX graph. `save_graph()` takes the NetworkX graph with any saved results and writes it to a `.gml` file. Reuses a lot of code from `file_io.py` in Project 1.
 8. **homophily.py:** Determines if homophily exists in the graph. First checks to see if the graph nodes contain a color attribute. Then calculates the number of cross-edges, all variables needed for a t-test, then utilizes the t-test to see if evidence of homophily exists in the graph.
 9. **neighborhood.py:** Calculates the neighborhood overlap for two given nodes in the graph. Finds the number of neighbors shared by them, then divides by the total number of neighbors to find the overlap. Saves the overlap as an attribute to both nodes it was calculated on.
-10. **plot.py:**
-11. **robustness_check.py:**
+10. **plot.py:** Plots the graph. Can be used in three different modes: `C` (which visualizes the clustering coefficient), `N` (which visualizes neighborhood overlap), and `P` (which plots the attributes of the graph, i.e. node color, edge signs)
+11. **robustness_check.py:** Performs multiple simulations of `k` random edge failures (default number of simulations = 100) and reports: average number of connected components, max/min component sizes, and whether original clusters persist.
 12. **simulate_fails.py:** Defines two functions. `removal()` creates a deepcopy of the original graph and removes k random edges from the copy. `failures()` calls `removal()` and then calculates the average shortest path (using BFS), the number of components, and the betweenness centrality on both the original and reduced graph, then analyzes the differences between them.
 
 
