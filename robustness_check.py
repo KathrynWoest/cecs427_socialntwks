@@ -52,6 +52,10 @@ def robustness_check(graph, k, simulations=100):
         "cluster_persistence_rate": sum(cluster_persistence_results) / simulations
     }
 
+    print("ROBUSTNESS_CHECK")
+    for result in results:
+        print(f"{result}: {results[result]}")
+    print('---')
     return results
 
 
