@@ -6,6 +6,20 @@ import os
 import webbrowser
 
 def plot(mode, graph, clustering_coeff=None, n_overlap=None):
+    """
+    Plots and visualizes the given graph in one of three modes: `C` (clustering coefficient), `N` (neighborhood overlap),
+    or `P` (graph attributes).
+    
+    Parameters:
+        - mode (str): the letter that specifies the plotting mode
+        - graph (NetworkX graph): the graph to be visualized
+        - clustering_coeff (int): the clustering coefficient for a specified node
+        - n_overlap (int): the neighborhood overlap between two specified nodes
+
+    Outputs:
+        - html file: visualized graph in HTML format
+    """
+    
     G = graph
 
     # Get node positions

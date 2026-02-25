@@ -2,6 +2,18 @@ import networkx as nx
 import itertools
 
 def components(n, graph, output_components=False):
+    """
+    Partitions the graph into `n` components using the Girvan-Newman method.   
+  
+    Parameters: 
+        - n (int): number of components
+        - graph (NetworkX graph): the graph to be partitioned
+        - output_components (bool): flag that controls the exporting of components   
+
+    Returns:
+        - partition (Incomplete): the partition with `n` components
+    """
+    
     # girvan_newman() returns an interator that yields a sequence of communities at each level
     communities_iterator = nx.community.girvan_newman(graph)
 

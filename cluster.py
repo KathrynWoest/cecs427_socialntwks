@@ -1,5 +1,3 @@
-import networkx as nx
-
 
 def clustering_coefficient(graph, node, plot=False):
     """Function that calculates the clustering coefficient of the given node in a graph, then saves that value with the node in the graph
