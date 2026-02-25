@@ -97,6 +97,14 @@ def animation(csv_path):
                         "label": "Play",
                         "method": "animate",
                         "args": [None, {"frame": {"duration": 800, "redraw": True}}]
+                    },
+                    {
+                        "label": "Stop",
+                        "method": "animate",
+                        "args": [[None], {
+                            "frame": {"duration": 0, "redraw": False},
+                            "mode": "immediate"
+                        }]
                     }
                 ]
             }
