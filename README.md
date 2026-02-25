@@ -3,7 +3,7 @@ Completed By: Kathryn Woest (030131541) and Grace Flores (030169163)
 
 
 ## Usage Instructions
-**NOTE:** `plot.py` relies on a command that is not compatible with WSL. This command automatically opens up the graph's visualization. If you are unable to use a different terminal like Powershell, comment out `plot.py`'s lines 162-164 and instead manually open the generated `.html` file through your file explorer.
+**NOTE:** `plot.py` relies on a command that is not compatible with WSL. This command automatically opens up the graph's visualization. If you are unable to use a different terminal like Powershell, comment out `plot.py`'s lines 162-164 and instead manually open the generated `.html` file through your file explorer. When calling `--temporal_simulation` and the simulation appears, double click the graph that appears to resize it and display every node in the viewport.
 
 1. Clone this repo and open it on your IDE
 
